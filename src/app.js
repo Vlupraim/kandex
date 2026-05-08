@@ -2,25 +2,30 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('./config/passport');
 const path = require('path');
+const ejs = require('ejs');
 
 const app = express();
 
+const VIEWS = path.join(__dirname, 'views');
+const LAYOUT = path.join(VIEWS, 'layouts', 'main.ejs');
+
 // Configuración de vistas
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', VIEWS);
 
-// Layout middleware (compatible con EJS v5)
+// Layout middleware
 app.use((req, res, next) => {
-    const _render = res.render.bind(res);
     res.render = function (view, locals, cb) {
         if (typeof locals === 'function') { cb = locals; locals = {}; }
-        locals = locals || {};
-        _render(view, locals, (err, body) => {
+        const opts = Object.assign({}, res.locals, locals || {});
+        const viewPath = path.join(VIEWS, view + '.ejs');
+        ejs.renderFile(viewPath, opts, (err, body) => {
             if (err) return next(err);
-            _render('layouts/main', { ...locals, body }, cb || ((err, html) => {
+            ejs.renderFile(LAYOUT, Object.assign({}, opts, { body }), (err, html) => {
                 if (err) return next(err);
+                if (cb) return cb(null, html);
                 res.send(html);
-            }));
+            });
         });
     };
     next();
