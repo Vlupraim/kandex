@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kandex — Preview</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #8b5cf6;
+      --text-primary: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.09);
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      min-height: 100vh;
+      color: var(--text-primary);
+    }
+
+    /* PREVIEW SWITCHER */
+    .preview-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0.5rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .preview-bar span { color: rgba(255,255,255,0.45); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-right: 0.5rem; }
+    .preview-bar button {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.3rem 0.85rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preview-bar button.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    .preview-bar button:hover:not(.active) {
+      background: rgba(255,255,255,0.08);
+      color: white;
+    }
+
+    /* offset body for preview bar */
+    body { padding-top: 42px; }
+
+    /* NAVBAR */
+    .navbar {
+      background: rgba(10,10,40,0.75) !important;
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0.7rem 1.5rem;
+    }
+    .navbar-brand { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.03em; color: #fff !important; }
+    .navbar-brand i { color: var(--primary); }
+    .nav-link { font-weight: 500; font-size: 0.875rem; color: rgba(255,255,255,0.65) !important; padding: 0.45rem 0.8rem !important; border-radius: var(--radius-sm); transition: all 0.15s; }
+    .nav-link:hover { color: #fff !important; background: rgba(255,255,255,0.09); }
+    .nav-link.active-nav { color: #fff !important; background: rgba(99,102,241,0.25); }
+    .dropdown-menu { border-radius: var(--radius-sm); border: 1px solid var(--border); box-shadow: var(--shadow-md); padding: 0.4rem; }
+    .dropdown-item { border-radius: 6px; font-size: 0.875rem; font-weight: 500; padding: 0.5rem 0.85rem; }
+
+    /* MAIN CONTAINER */
+    .kanban-container {
+      background: #f1f5f9;
+      border-radius: 20px;
+      padding: 2rem 2.25rem;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+      min-height: calc(100vh - 140px);
+    }
+
+    /* HERO */
+    .hero-section { text-align: center; padding: 1.75rem 0 2.5rem; color: white; }
+    .hero-section h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 0.6rem; text-shadow: 0 2px 20px rgba(0,0,0,0.25); }
+    .hero-section p { font-size: 1rem; opacity: 0.78; margin-bottom: 1.75rem; }
+    .btn-custom { border-radius: 10px; padding: 0.55rem 1.4rem; font-weight: 600; font-size: 0.875rem; transition: transform 0.15s, box-shadow 0.15s; }
+    .btn-custom:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.14); }
+
+    /* STATS */
+    .stats-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius); padding: 1.75rem 1.25rem; text-align: center; color: white; backdrop-filter: blur(12px); transition: transform 0.2s, background 0.2s; }
+    .stats-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.11); }
+    .stats-card i { opacity: 0.75; }
+    .stats-card h2 { font-size: 2.75rem; font-weight: 800; letter-spacing: -0.05em; margin: 0.4rem 0 0.2rem; line-height: 1; }
+    .stats-card p { font-size: 0.75rem; opacity: 0.7; margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; }
+
+    /* KANBAN */
+    .kanban-column { min-height: 420px; border-radius: var(--radius); padding: 1.1rem; margin-bottom: 1.5rem; transition: box-shadow 0.2s, transform 0.2s; }
+    .kanban-column[data-estado="Por realizar"] { background: #eff6ff; border: 1.5px solid #bfdbfe; }
+    .kanban-column[data-estado="En proceso"]   { background: #fffbeb; border: 1.5px solid #fde68a; }
+    .kanban-column[data-estado="Realizado"]    { background: #f0fdf4; border: 1.5px solid #bbf7d0; }
+    .col-label { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; padding: 0.3rem 0.7rem; border-radius: 20px; margin-bottom: 1rem; }
+    .kanban-column[data-estado="Por realizar"] .col-label { background: #dbeafe; color: #1d4ed8; }
+    .kanban-column[data-estado="En proceso"] .col-label   { background: #fef3c7; color: #92400e; }
+    .kanban-column[data-estado="Realizado"] .col-label    { background: #dcfce7; color: #166534; }
+
+    /* TASK CARDS */
+    .task-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.95rem 1rem; margin-bottom: 0.65rem; cursor: grab; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; box-shadow: var(--shadow-sm); }
+    .task-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+    .task-card h5 { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.3rem; }
+    .task-card p { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.7rem; line-height: 1.45; }
+
+    /* BADGES */
+    .priority-badge { font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .priority-Baja    { background: #d1fae5; color: #065f46; }
+    .priority-Media   { background: #fef3c7; color: #92400e; }
+    .priority-Alta    { background: #fee2e2; color: #991b1b; }
+    .priority-Urgente { background: #fce7f3; color: #9d174d; }
+
+    /* LOGIN */
+    .login-page { min-height: calc(100vh - 100px); display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+    .login-panel { width: 100%; max-width: 440px; }
+    .login-brand { color: white; }
+    .login-brand h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; }
+    .login-brand p { opacity: 0.7; font-size: 0.875rem; }
+    .login-logo { width: 72px; height: 72px; margin: 0 auto 1.1rem; border-radius: 18px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; font-size: 1.85rem; box-shadow: 0 12px 32px rgba(99,102,241,0.4); }
+    .login-card { border-radius: 20px; overflow: hidden; background: rgba(255,255,255,0.97); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 32px 80px rgba(0,0,0,0.3); margin-top: 1.25rem; }
+    .login-card .card-body { padding: 2.1rem; }
+    .login-card .form-label { font-size: 0.825rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem; }
+    .login-card .form-control { border-radius: 10px; padding: 0.72rem 0.95rem; border: 1.5px solid #e2e8f0; background: #f8fafc; font-size: 0.9rem; transition: all 0.15s; }
+    .login-card .form-control:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(99,102,241,0.13); outline: none; }
+    .btn-login { border-radius: 10px; padding: 0.82rem; font-weight: 700; font-size: 0.925rem; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border: none; color: white; transition: all 0.15s; width: 100%; }
+    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(99,102,241,0.38); color: white; background: linear-gradient(135deg, var(--primary-dark) 0%, #7c3aed 100%); }
+    .login-card .card-footer { background: #f8fafc; border-top: 1px solid #e8edf3; padding: 1rem 2.1rem; font-size: 0.85rem; }
+    .login-card a { text-decoration: none; color: var(--primary); font-weight: 600; }
+    .login-card a:hover { text-decoration: underline; }
+
+    /* FOOTER */
+    footer { background: rgba(0,0,0,0.35) !important; backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.5) !important; font-size: 0.825rem; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 4px; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- PREVIEW SWITCHER -->
+  <div class="preview-bar">
+    <span>Vista</span>
+    <button class="active" onclick="showView('login', this)"><i class="bi bi-box-arrow-in-right"></i> Login</button>
+    <button onclick="showView('register', this)"><i class="bi bi-person-plus"></i> Registro</button>
+    <button onclick="showView('dashboard', this)"><i class="bi bi-house-door"></i> Dashboard</button>
+    <button onclick="showView('board', this)"><i class="bi bi-kanban"></i> Tablero</button>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark shadow">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-kanban-fill me-2"></i>Kandex
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link active-nav" href="#"><i class="bi bi-house-door"></i> Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-list-task"></i> Tareas</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-people"></i> Equipos</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-bar-chart"></i> Reportes</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle me-1"></i>Demo User
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-1"></i> Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── LOGIN VIEW ── -->
+  <div class="view active" id="view-login">
+    <div class="login-page">
+      <div class="login-panel">
+        <div class="login-brand text-center mb-4">
+          <div class="login-logo">
+            <i class="bi bi-kanban-fill"></i>
+          </div>
+          <h1>Bienvenido a Kandex</h1>
+          <p>Organiza tus tareas y equipos con un panel claro y centralizado.</p>
+        </div>
+        <div class="login-card">
+          <div class="card-body">
+            <div class="text-center mb-4">
+              <h2 class="h4 fw-700 mb-1" style="font-weight:700;letter-spacing:-0.02em;">Iniciar Sesión</h2>
+              <p class="text-muted mb-0" style="font-size:0.875rem;">Accede a tu tablero y gestiona tu trabajo.</p>
+            </div>
+            <form>
+              <div class="mb-3">
+                <label class="form-label"><i class="bi bi-envelope me-1"></i>Email</label>
+                <input type="email" class="form-control" placeholder="tu@email.com">
+              </div>
+              <div class="mb-4">
+                <label class="form-label"><i class="bi bi-key me-1"></i>Contraseña</label>
+                <input type="password" class="form-control" placeholder="••••••••">
+              </div>
+              <button type="button" class="btn-login mb-3">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+              </button>
+            </form>
+          </div>
+          <div class="card-footer text-center">
+            <p class="mb-0 text-muted">¿No tienes cuenta? <a href="#">Regístrate aquí</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── REGISTER VIEW ── -->
+  <div class="view" id="view-register">
+    <div class="login-page">
+      <div class="login-panel">
+        <div class="login-brand text-center mb-4">
+          <div class="login-logo" style="background: linear-gradient(135deg, #059669, #10b981);">
+            <i class="bi bi-person-plus-fill"></i>
+          </div>
+          <h1>Crear Cuenta</h1>
+          <p>Únete a Kandex y empieza a organizar tu trabajo hoy.</p>
+        </div>
+        <div class="login-card">
+          <div class="card-body">
+            <form>
+              <div class="mb-3">
+                <label class="form-label"><i class="bi bi-person me-1"></i>Nombre de Usuario</label>
+                <input type="text" class="form-control" placeholder="Tu nombre">
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><i class="bi bi-envelope me-1"></i>Email</label>
+                <input type="email" class="form-control" placeholder="tu@email.com">
+              </div>
+              <div class="mb-4">
+                <label class="form-label"><i class="bi bi-key me-1"></i>Contraseña</label>
+                <input type="password" class="form-control" placeholder="••••••••">
+              </div>
+              <button type="button" class="btn-login mb-3" style="background: linear-gradient(135deg,#059669,#10b981);">
+                <i class="bi bi-person-check me-2"></i>Registrarse
+              </button>
+            </form>
+          </div>
+          <div class="card-footer text-center">
+            <p class="mb-0 text-muted">¿Ya tienes cuenta? <a href="#">Inicia sesión</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DASHBOARD VIEW ── -->
+  <div class="view" id="view-dashboard">
+    <div class="container-fluid py-4">
+      <div class="kanban-container">
+        <div class="hero-section mb-4">
+          <h1><i class="bi bi-kanban"></i> Bienvenido a Kandex</h1>
+          <p>Organiza tus tareas de manera eficiente con tu tablero Kanban</p>
+          <a href="#" class="btn btn-light btn-custom"><i class="bi bi-plus-circle me-1"></i> Ver Mis Tareas</a>
+        </div>
+
+        <div class="row mb-4 g-3">
+          <div class="col-md-4">
+            <div class="stats-card">
+              <i class="bi bi-check-circle-fill fs-2 mb-2 d-block"></i>
+              <h2>4</h2>
+              <p>Tareas Completadas</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stats-card">
+              <i class="bi bi-clock-fill fs-2 mb-2 d-block"></i>
+              <h2>2</h2>
+              <p>En Progreso</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stats-card">
+              <i class="bi bi-list-task fs-2 mb-2 d-block"></i>
+              <h2>8</h2>
+              <p>Total de Tareas</p>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="text-center mb-4" style="color:var(--text-primary);font-weight:700;font-size:1.1rem;letter-spacing:-0.01em;">
+          <i class="bi bi-grid-3x3-gap me-2"></i>Tu Tablero Kanban
+        </h2>
+
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="kanban-column" data-estado="Por realizar">
+              <div class="col-label"><i class="bi bi-circle"></i> Por realizar</div>
+              <div class="task-card">
+                <h5><i class="bi bi-card-text me-1"></i> Diseñar wireframes</h5>
+                <p>Crear los prototipos de las pantallas principales de la app.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Alta">Alta</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="task-card">
+                <h5><i class="bi bi-card-text me-1"></i> Configurar CI/CD</h5>
+                <p>Integrar pipeline de despliegue automático con GitHub Actions.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Media">Media</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="kanban-column" data-estado="En proceso">
+              <div class="col-label"><i class="bi bi-arrow-repeat"></i> En proceso</div>
+              <div class="task-card">
+                <h5><i class="bi bi-card-text me-1"></i> API de autenticación</h5>
+                <p>Implementar login con JWT y refresh tokens.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Urgente">Urgente</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="task-card">
+                <h5><i class="bi bi-card-text me-1"></i> Módulo de reportes</h5>
+                <p>Generar gráficas de progreso por equipo y usuario.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Media">Media</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="kanban-column" data-estado="Realizado">
+              <div class="col-label"><i class="bi bi-check-circle-fill"></i> Realizado</div>
+              <div class="task-card">
+                <h5><i class="bi bi-card-text me-1"></i> Setup del proyecto</h5>
+                <p>Configurar Express, EJS y estructura MVC inicial.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Baja">Baja</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="task-card">
+                <h5><i class="bi bi-card-text me-1"></i> Base de datos MySQL</h5>
+                <p>Diseñar el schema y migraciones iniciales.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Alta">Alta</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BOARD VIEW ── -->
+  <div class="view" id="view-board">
+    <div class="container-fluid py-4">
+      <div class="kanban-container">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <h1 class="mb-0" style="font-size:1.4rem;font-weight:800;letter-spacing:-0.03em;">
+            <i class="bi bi-kanban-fill me-2" style="color:var(--primary);"></i>Tablero Kanban
+          </h1>
+          <a href="#" class="btn btn-primary btn-custom">
+            <i class="bi bi-plus me-1"></i> Nueva Tarea
+          </a>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="kanban-column" data-estado="Por realizar">
+              <div class="col-label"><i class="bi bi-circle"></i> Por realizar <span class="ms-1 opacity-60">2</span></div>
+              <div class="task-card">
+                <h5>Diseñar wireframes</h5>
+                <p>Crear los prototipos de las pantallas principales de la app móvil.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Alta">Alta</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="task-card">
+                <h5>Configurar CI/CD</h5>
+                <p>Integrar pipeline con GitHub Actions para deploys automáticos.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Media">Media</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="kanban-column" data-estado="En proceso">
+              <div class="col-label"><i class="bi bi-arrow-repeat"></i> En proceso <span class="ms-1 opacity-60">2</span></div>
+              <div class="task-card">
+                <h5>API de autenticación</h5>
+                <p>Implementar login con JWT y refresh tokens seguros.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Urgente">Urgente</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="task-card">
+                <h5>Módulo de reportes</h5>
+                <p>Generar gráficas de progreso semanal por equipo.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Media">Media</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="kanban-column" data-estado="Realizado">
+              <div class="col-label"><i class="bi bi-check-circle-fill"></i> Realizado <span class="ms-1 opacity-60">2</span></div>
+              <div class="task-card">
+                <h5>Setup del proyecto</h5>
+                <p>Configurar Express, EJS y la estructura MVC base.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Baja">Baja</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+              <div class="task-card">
+                <h5>Schema MySQL</h5>
+                <p>Diseñar el esquema de base de datos y migraciones.</p>
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="badge priority-badge priority-Alta">Alta</span>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="mt-0 py-3">
+    <div class="container text-center">
+      <p class="mb-0"><i class="bi bi-c-circle"></i> 2026 Kandex · Gestión de Tareas Kanban</p>
+      <small>Node.js · Express · Bootstrap 5</small>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function showView(name, btn) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.preview-bar button').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-' + name).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>

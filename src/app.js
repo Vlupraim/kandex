@@ -1,7 +1,7 @@
 const express = require('express');
+const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const passport = require('./config/passport');
-const ejs = require('ejs');
 const path = require('path');
 
 const app = express();
@@ -9,6 +9,8 @@ const app = express();
 // Configuración de vistas
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');
 
 // Middlewares
 app.use(express.urlencoded({ extended: true }));

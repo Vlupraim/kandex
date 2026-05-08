@@ -1,206 +1,420 @@
-.kanban-column {
-    min-height: 500px;
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #eef2ff;
+  --secondary: #8b5cf6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --text-primary: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.09);
+  --shadow-lg: 0 20px 48px rgba(99,102,241,0.15);
+  --radius: 14px;
+  --radius-sm: 8px;
 }
 
-.kanban-column:hover {
-    transform: translateY(-2px);
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  min-height: 100vh;
+  color: var(--text-primary);
 }
 
-.kanban-column[data-estado="Por realizar"] {
-    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-    color: white;
+/* ── NAVBAR ─────────────────────────────────────── */
+.navbar {
+  background: rgba(10, 10, 40, 0.75) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 0.7rem 1.5rem;
 }
 
-.kanban-column[data-estado="En proceso"] {
-    background: linear-gradient(135deg, #ffeaa7 0%, #d63031 100%);
-    color: #2d3436;
+.navbar-brand {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff !important;
 }
 
-.kanban-column[data-estado="Realizado"] {
-    background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
-    color: white;
+.navbar-brand i { color: var(--primary); }
+
+.nav-link {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.65) !important;
+  padding: 0.45rem 0.8rem !important;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
 }
 
-.task-card {
-    background-color: rgba(255, 255, 255, 0.9);
-    border: none;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-    cursor: move;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.nav-link:hover {
+  color: #fff !important;
+  background: rgba(255,255,255,0.09);
 }
 
-.task-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+.dropdown-menu {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 0.4rem;
 }
 
-.task-card.dragging {
-    opacity: 0.5;
-    transform: rotate(5deg);
+.dropdown-item {
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 0.85rem;
 }
 
-.priority-badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
+/* ── MAIN WRAPPER ────────────────────────────────── */
+.kanban-container {
+  background: #f1f5f9;
+  border-radius: 20px;
+  padding: 2rem 2.25rem;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+  min-height: calc(100vh - 130px);
 }
 
-.priority-Baja {
-    background-color: #00b894;
-    color: white;
-}
-
-.priority-Media {
-    background-color: #fdcb6e;
-    color: #2d3436;
-}
-
-.priority-Alta {
-    background-color: #e17055;
-    color: white;
-}
-
-.priority-Urgente {
-    background-color: #d63031;
-    color: white;
-}
-
-.btn-custom {
-    border-radius: 20px;
-    padding: 0.5rem 1.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-custom:hover {
-    transform: scale(1.05);
-}
-
+/* ── HERO SECTION ────────────────────────────────── */
 .hero-section {
-    text-align: center;
-    padding: 3rem 0;
-    color: white;
+  text-align: center;
+  padding: 1.75rem 0 2.5rem;
+  color: white;
 }
 
 .hero-section h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.6rem;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.25);
 }
 
 .hero-section p {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  font-size: 1rem;
+  opacity: 0.78;
+  margin-bottom: 1.75rem;
 }
 
+/* ── STATS CARDS ─────────────────────────────────── */
 .stats-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 1.5rem;
-    text-align: center;
-    color: white;
-    backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.25rem;
+  text-align: center;
+  color: white;
+  backdrop-filter: blur(12px);
+  transition: transform 0.2s, background 0.2s;
 }
+
+.stats-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.11);
+}
+
+.stats-card i { opacity: 0.75; }
 
 .stats-card h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  margin: 0.4rem 0 0.2rem;
+  line-height: 1;
 }
 
 .stats-card p {
-    font-size: 1rem;
-    opacity: 0.9;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin: 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-/* Login page styles */
+/* ── KANBAN BOARD ────────────────────────────────── */
+.kanban-board-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+}
+
+.kanban-column {
+  min-height: 460px;
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.kanban-column[data-estado="Por realizar"] {
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+}
+
+.kanban-column[data-estado="En proceso"] {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+}
+
+.kanban-column[data-estado="Realizado"] {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+}
+
+.kanban-column.drag-over {
+  box-shadow: 0 0 0 3px var(--primary);
+  transform: scale(1.01);
+}
+
+/* Column headings */
+.kanban-column .col-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+}
+
+.kanban-column[data-estado="Por realizar"] .col-label { background: #dbeafe; color: #1d4ed8; }
+.kanban-column[data-estado="En proceso"] .col-label { background: #fef3c7; color: #92400e; }
+.kanban-column[data-estado="Realizado"] .col-label { background: #dcfce7; color: #166534; }
+
+/* ── TASK CARDS ──────────────────────────────────── */
+.task-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.95rem 1rem;
+  margin-bottom: 0.65rem;
+  cursor: grab;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.task-card:active { cursor: grabbing; }
+
+.task-card.dragging {
+  opacity: 0.35;
+  transform: rotate(2deg) scale(0.97);
+}
+
+.task-card h5 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.task-card p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 0.7rem;
+  line-height: 1.45;
+}
+
+.task-card .task-actions { display: flex; gap: 0.35rem; }
+
+.task-card .btn-sm {
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+}
+
+/* ── PRIORITY BADGES ─────────────────────────────── */
+.priority-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.18rem 0.55rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.priority-Baja     { background: #d1fae5; color: #065f46; }
+.priority-Media    { background: #fef3c7; color: #92400e; }
+.priority-Alta     { background: #fee2e2; color: #991b1b; }
+.priority-Urgente  { background: #fce7f3; color: #9d174d; }
+
+/* ── BUTTONS ─────────────────────────────────────── */
+.btn-custom {
+  border-radius: 10px;
+  padding: 0.55rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-custom:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.14);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, #7c3aed 100%);
+  border: none;
+}
+
+/* ── LOGIN PAGE ──────────────────────────────────── */
 .login-page {
-    min-height: calc(100vh - 120px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 0;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
 }
 
 .login-panel {
-    width: 100%;
-    max-width: 480px;
+  width: 100%;
+  max-width: 440px;
 }
 
-.login-brand {
-    color: #2b2d42;
+.login-brand { color: white; }
+
+.login-brand h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.login-brand p {
+  opacity: 0.7;
+  font-size: 0.875rem;
 }
 
 .login-logo {
-    width: 88px;
-    height: 88px;
-    margin: 0 auto 1rem;
-    border-radius: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #5a60f8 0%, #6d5dfc 100%);
-    color: #ffffff;
-    font-size: 2rem;
-    box-shadow: 0 18px 40px rgba(72, 62, 207, 0.18);
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.1rem;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  font-size: 1.85rem;
+  box-shadow: 0 12px 32px rgba(99,102,241,0.4);
 }
 
 .login-card {
-    border-radius: 28px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.96);
-    border: 1px solid rgba(125, 136, 255, 0.12);
-    box-shadow: 0 22px 70px rgba(77, 77, 143, 0.12);
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.97);
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+  margin-top: 1.25rem;
 }
 
-.login-card .card-body {
-    padding: 2rem;
-}
+.login-card .card-body { padding: 2.1rem; }
 
 .login-card .form-label {
-    font-weight: 600;
-    color: #41436a;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
 }
 
 .login-card .form-control {
-    border-radius: 14px;
-    padding: 1rem 1rem;
-    border: 1px solid #e2e4f8;
-    background: #f8f9ff;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 10px;
+  padding: 0.72rem 0.95rem;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 0.9rem;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
 }
 
 .login-card .form-control:focus {
-    border-color: #5a60f8;
-    box-shadow: 0 0 0 0.15rem rgba(90, 96, 248, 0.18);
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.13);
+  outline: none;
 }
 
 .btn-login {
-    border-radius: 14px;
-    padding: 0.95rem 1.25rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
+  border-radius: 10px;
+  padding: 0.82rem;
+  font-weight: 700;
+  font-size: 0.925rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  border: none;
+  color: white;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  width: 100%;
+}
+
+.btn-login:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(99,102,241,0.38);
+  background: linear-gradient(135deg, var(--primary-dark) 0%, #7c3aed 100%);
+  color: white;
 }
 
 .login-card .card-footer {
-    background: transparent;
+  background: #f8fafc;
+  border-top: 1px solid #e8edf3;
+  padding: 1rem 2.1rem;
+  font-size: 0.85rem;
 }
 
-.login-card a {
-    text-decoration: none;
+.login-card a { text-decoration: none; color: var(--primary); font-weight: 600; }
+.login-card a:hover { text-decoration: underline; }
+
+/* ── REGISTER CARD ───────────────────────────────── */
+.card {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
-.login-card a:hover {
-    text-decoration: underline;
+.card-header.bg-success {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  border-radius: var(--radius) var(--radius) 0 0;
+  border: none;
+}
+
+/* ── FOOTER ──────────────────────────────────────── */
+footer {
+  background: rgba(0,0,0,0.35) !important;
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.5) !important;
+  font-size: 0.825rem;
+}
+
+/* ── SCROLLBAR ───────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 4px; }
+
+/* ── UTILITIES ───────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
