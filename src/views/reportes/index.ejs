@@ -1,86 +1,93 @@
-<h1 class="mb-4">Reportes de Productividad</h1>
-
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <h5 class="card-title">Tareas Completadas</h5>
-                <h2><%= completadas.length %></h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card bg-success text-white">
-            <div class="card-body">
-                <h5 class="card-title">Tiempo Promedio</h5>
-                <h2><%= tiempoPromedio %> hrs</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <h5 class="card-title">Total de Tareas</h5>
-                <h2><%= tareas.length %></h2>
-            </div>
-        </div>
-    </div>
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Reportes</h1>
+    <p class="page-subtitle">Análisis de productividad y progreso</p>
+  </div>
 </div>
 
-<h3 class="mt-4">Filtrar por Rango de Fechas</h3>
-<form id="filtroForm" class="row g-3 mb-4">
-    <div class="col-md-4">
-        <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
-        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
+<div class="stats-grid">
+  <div class="stat-card stat-green">
+    <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+    <div class="stat-info">
+      <span class="stat-value"><%= completadas.length %></span>
+      <span class="stat-label">Completadas</span>
     </div>
-    <div class="col-md-4">
-        <label for="fecha_fin" class="form-label">Fecha Fin</label>
-        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+  </div>
+  <div class="stat-card stat-blue">
+    <div class="stat-icon"><i class="bi bi-clock"></i></div>
+    <div class="stat-info">
+      <span class="stat-value"><%= tiempoPromedio %> h</span>
+      <span class="stat-label">Tiempo promedio</span>
     </div>
-    <div class="col-md-4">
-        <button type="submit" class="btn btn-primary mt-4">Filtrar</button>
+  </div>
+  <div class="stat-card stat-purple">
+    <div class="stat-icon"><i class="bi bi-list-task"></i></div>
+    <div class="stat-info">
+      <span class="stat-value"><%= tareas.length %></span>
+      <span class="stat-label">Total tareas</span>
     </div>
-</form>
+  </div>
+</div>
 
-<h3>Tareas Completadas</h3>
-<table class="table table-striped">
-    <thead>
-        <tr>
+<div class="form-card mb-4">
+  <h3 class="section-title mb-3"><i class="bi bi-funnel me-2"></i>Filtrar por rango de fechas</h3>
+  <form id="filtroForm" class="form-row">
+    <div class="form-group">
+      <label class="form-label">Fecha inicio</label>
+      <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fecha fin</label>
+      <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+    </div>
+    <div class="form-group" style="align-self:flex-end">
+      <button type="submit" class="btn-primary-action">Filtrar</button>
+    </div>
+  </form>
+</div>
+
+<div class="form-card">
+  <h3 class="section-title mb-3"><i class="bi bi-check-circle me-2"></i>Tareas completadas</h3>
+  <% if (completadas.length === 0) { %>
+    <div class="col-empty"><i class="bi bi-inbox"></i><span>No hay tareas completadas</span></div>
+  <% } else { %>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
             <th>Título</th>
-            <th>Fecha Creación</th>
-            <th>Fecha Finalización</th>
-            <th>Tiempo (horas)</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% completadas.forEach(tarea => { 
+            <th>Creación</th>
+            <th>Finalización</th>
+            <th>Duración</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% completadas.forEach(tarea => {
             const inicio = new Date(tarea.fecha_creacion);
-            const fin = new Date(tarea.fecha_finalizacion);
-            const horas = ((fin - inicio) / (1000 * 60 * 60)).toFixed(2);
-        %>
+            const fin    = new Date(tarea.fecha_finalizacion);
+            const horas  = ((fin - inicio) / (1000 * 60 * 60)).toFixed(1);
+          %>
             <tr>
-                <td><%= tarea.titulo %></td>
-                <td><%= inicio.toLocaleDateString('es-ES') %></td>
-                <td><%= fin.toLocaleDateString('es-ES') %></td>
-                <td><%= horas %> hrs</td>
+              <td class="fw-500"><%= tarea.titulo %></td>
+              <td class="text-muted"><%= inicio.toLocaleDateString('es-ES') %></td>
+              <td class="text-muted"><%= fin.toLocaleDateString('es-ES') %></td>
+              <td><span class="duration-badge"><%= horas %> h</span></td>
             </tr>
-        <% }); %>
-    </tbody>
-</table>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
 
 <script>
 document.getElementById('filtroForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const inicio = document.getElementById('fecha_inicio').value;
-    const fin = document.getElementById('fecha_fin').value;
-    
-    if (!inicio || !fin) {
-        alert('Por favor completa ambas fechas');
-        return;
-    }
-
-    const response = await fetch(`/reportes/filtrar?fecha_inicio=${inicio}&fecha_fin=${fin}`);
-    const data = await response.json();
-    alert(`Se encontraron ${data.total} tareas completadas en ese rango`);
+  e.preventDefault();
+  const inicio = document.getElementById('fecha_inicio').value;
+  const fin    = document.getElementById('fecha_fin').value;
+  if (!inicio || !fin) { alert('Completá ambas fechas'); return; }
+  const res  = await fetch(`/reportes/filtrar?fecha_inicio=${inicio}&fecha_fin=${fin}`);
+  const data = await res.json();
+  alert(`${data.total} tareas completadas en ese rango`);
 });
 </script>

@@ -6,7 +6,7 @@ class Usuario {
         const hashedPassword = await bcrypt.hash(password, 10);
         const [result] = await db.promise().query(
             'INSERT INTO usuarios (nombre_usuario, email, password_hash, rol) VALUES (?, ?, ?, ?)',
-            [nombre_usuario, email, hashedPassword, rol]
+            [nombre_usuario, email, hashedPassword, rol || 'usuario']
         );
         return result.insertId;
     }
@@ -15,8 +15,6 @@ class Usuario {
         const [rows] = await db.promise().query('SELECT * FROM usuarios WHERE email = ?', [email]);
         return rows[0];
     }
-
-    // Otros métodos si es necesario
 }
 
 module.exports = Usuario;

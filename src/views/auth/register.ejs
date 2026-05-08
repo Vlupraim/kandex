@@ -1,32 +1,43 @@
-<div class="row justify-content-center align-items-center min-vh-100">
-    <div class="col-md-6 col-lg-4">
-        <div class="card shadow-lg border-0">
-            <div class="card-header bg-success text-white text-center py-4">
-                <i class="bi bi-person-plus-fill fs-1 mb-2"></i>
-                <h2 class="mb-0">Registro</h2>
-            </div>
-            <div class="card-body p-4">
-                <form action="/auth/register" method="POST">
-                    <div class="mb-3">
-                        <label for="nombre_usuario" class="form-label"><i class="bi bi-person"></i> Nombre de Usuario</label>
-                        <input type="text" class="form-control form-control-lg" id="nombre_usuario" name="nombre_usuario" required placeholder="Tu nombre">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label"><i class="bi bi-envelope"></i> Email</label>
-                        <input type="email" class="form-control form-control-lg" id="email" name="email" required placeholder="tu@email.com">
-                    </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label"><i class="bi bi-key"></i> Contraseña</label>
-                        <input type="password" class="form-control form-control-lg" id="password" name="password" required placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn btn-success btn-lg w-100 mb-3">
-                        <i class="bi bi-person-check"></i> Registrarse
-                    </button>
-                </form>
-            </div>
-            <div class="card-footer text-center bg-light">
-                <p class="mb-0">¿Ya tienes cuenta? <a href="/auth/login" class="text-success fw-bold">Inicia sesión</a></p>
-            </div>
-        </div>
+<div class="auth-page">
+  <div class="auth-panel">
+    <div class="auth-brand">
+      <div class="auth-logo"><i class="bi bi-kanban-fill"></i></div>
+      <h1>Kandex</h1>
+      <p>Gestión de tareas con metodología Kanban</p>
     </div>
+    <div class="auth-card">
+      <div class="auth-card-body">
+        <h2>Crear cuenta</h2>
+        <p class="auth-subtitle">Empieza a organizar tu trabajo hoy</p>
+        <form action="/auth/register" method="POST">
+          <div class="form-group">
+            <label class="form-label">Nombre de usuario</label>
+            <div class="input-icon-wrapper">
+              <i class="bi bi-person"></i>
+              <input type="text" class="form-control" name="nombre_usuario" placeholder="tu_nombre" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="input-icon-wrapper">
+              <i class="bi bi-envelope"></i>
+              <input type="email" class="form-control" name="email" placeholder="tu@email.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contraseña</label>
+            <div class="input-icon-wrapper">
+              <i class="bi bi-lock"></i>
+              <input type="password" class="form-control" name="password" placeholder="••••••••" required>
+            </div>
+          </div>
+          <input type="hidden" name="rol" value="usuario">
+          <button type="submit" class="btn-auth">Crear cuenta</button>
+        </form>
+      </div>
+      <div class="auth-card-footer">
+        ¿Ya tienes cuenta? <a href="/auth/login">Inicia sesión</a>
+      </div>
+    </div>
+  </div>
 </div>

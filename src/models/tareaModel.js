@@ -23,13 +23,13 @@ class Tarea {
     }
 
     static async update(id, { titulo, descripcion, estado, prioridad, fecha_inicio, fecha_limite }) {
-        const query = 'UPDATE tareas SET titulo = ?, descripcion = ?, estado = ?, prioridad = ?, fecha_inicio = ?, fecha_limite = ?';
+        let query = 'UPDATE tareas SET titulo = ?, descripcion = ?, estado = ?, prioridad = ?, fecha_inicio = ?, fecha_limite = ?';
         const params = [titulo, descripcion, estado, prioridad, fecha_inicio, fecha_limite];
-        
+
         if (estado === 'Realizado') {
             query = 'UPDATE tareas SET titulo = ?, descripcion = ?, estado = ?, prioridad = ?, fecha_inicio = ?, fecha_limite = ?, fecha_finalizacion = NOW()';
         }
-        
+
         await db.promise().query(query + ' WHERE id = ?', [...params, id]);
     }
 
