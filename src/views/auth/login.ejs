@@ -1,35 +1,36 @@
-<div class="auth-page">
-  <div class="auth-panel">
-    <div class="auth-brand">
-      <div class="auth-logo"><i class="bi bi-kanban-fill"></i></div>
-      <h1>Kandex</h1>
-      <p>Gestión de tareas con metodología Kanban</p>
+<div class="login__brand">
+  <div class="login__brand-mark">K</div>
+  <span>Kandex</span>
+</div>
+
+<div class="login__form-wrap">
+  <div class="login__eyebrow">Bienvenido de vuelta</div>
+  <h1>Ingresa a tu espacio</h1>
+  <p class="login__sub">Tus tableros, tus proyectos, tu equipo — todo en un solo lugar.</p>
+
+  <form action="/auth/login" method="POST">
+    <div class="field">
+      <label class="field__label">Correo electrónico</label>
+      <input class="input input--lg" type="email" name="email" placeholder="tu@email.com" required>
     </div>
-    <div class="auth-card">
-      <div class="auth-card-body">
-        <h2>Iniciar Sesión</h2>
-        <p class="auth-subtitle">Accede a tu espacio de trabajo</p>
-        <form action="/auth/login" method="POST">
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <div class="input-icon-wrapper">
-              <i class="bi bi-envelope"></i>
-              <input type="email" class="form-control" name="email" placeholder="tu@email.com" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Contraseña</label>
-            <div class="input-icon-wrapper">
-              <i class="bi bi-lock"></i>
-              <input type="password" class="form-control" name="password" placeholder="••••••••" required>
-            </div>
-          </div>
-          <button type="submit" class="btn-auth">Iniciar Sesión</button>
-        </form>
-      </div>
-      <div class="auth-card-footer">
-        ¿No tienes cuenta? <a href="/auth/register">Regístrate gratis</a>
-      </div>
+    <div class="field">
+      <label class="field__label">Contraseña</label>
+      <input class="input input--lg" type="password" name="password" placeholder="••••••••" required>
     </div>
+    <button class="btn btn--block btn--lg" type="submit" style="margin-top:8px">
+      Entrar a Kandex
+    </button>
+  </form>
+
+  <p class="login__sub" style="margin-top:20px;margin-bottom:0;font-size:13px">
+    ¿Aún no tienes cuenta? <a href="/auth/register" style="color:var(--fg);font-weight:500">Crea una gratis</a>
+  </p>
+</div>
+
+<div class="login__foot">
+  <span>© 2026 Kandex</span>
+  <div class="login__foot-links">
+    <a href="#">Privacidad</a>
+    <a href="#">Términos</a>
   </div>
 </div>

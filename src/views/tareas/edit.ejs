@@ -1,60 +1,62 @@
-<div class="page-header">
-  <div>
-    <h1 class="page-title">Editar Tarea</h1>
-    <p class="page-subtitle">Modificá los datos de la tarea</p>
-  </div>
-  <a href="/tareas" class="btn-secondary-action"><i class="bi bi-arrow-left"></i> Volver</a>
+<div class="topbar">
+  <a href="/tareas" class="topbar__action" title="Volver"><i data-lucide="arrow-left"></i></a>
+  <h1>Editar tarea</h1>
 </div>
 
-<div class="form-card">
-  <form action="/tareas/edit/<%= tarea.id %>" method="POST">
-    <div class="form-row">
-      <div class="form-group full-width">
-        <label class="form-label">Título <span class="required">*</span></label>
-        <input type="text" class="form-control" name="titulo" value="<%= tarea.titulo %>" required>
+<div class="page-content">
+  <div class="form-page">
+    <form action="/tareas/edit/<%= tarea.id %>" method="POST">
+      <div class="form-section">
+        <div class="field">
+          <label class="field__label">Título *</label>
+          <input class="input input--lg" type="text" name="titulo" value="<%= tarea.titulo %>" required>
+        </div>
+        <div class="field">
+          <label class="field__label">Descripción</label>
+          <textarea class="input textarea" name="descripcion" rows="3"><%= tarea.descripcion || '' %></textarea>
+        </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group full-width">
-        <label class="form-label">Descripción</label>
-        <textarea class="form-control" name="descripcion" rows="3"><%= tarea.descripcion || '' %></textarea>
+
+      <div class="form-section">
+        <div class="form-row">
+          <div class="field">
+            <label class="field__label">Estado</label>
+            <select class="input select" name="estado">
+              <option value="Por realizar"  <%= tarea.estado === 'Por realizar'  ? 'selected' : '' %>>Por realizar</option>
+              <option value="En progreso"   <%= tarea.estado === 'En progreso'   ? 'selected' : '' %>>En progreso</option>
+              <option value="En revisión"   <%= tarea.estado === 'En revisión'   ? 'selected' : '' %>>En revisión</option>
+              <option value="Realizado"     <%= tarea.estado === 'Realizado'     ? 'selected' : '' %>>Realizado</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label">Prioridad</label>
+            <select class="input select" name="prioridad">
+              <option value="Baja"    <%= tarea.prioridad === 'Baja'    ? 'selected' : '' %>>Baja</option>
+              <option value="Media"   <%= tarea.prioridad === 'Media'   ? 'selected' : '' %>>Media</option>
+              <option value="Alta"    <%= tarea.prioridad === 'Alta'    ? 'selected' : '' %>>Alta</option>
+              <option value="Urgente" <%= tarea.prioridad === 'Urgente' ? 'selected' : '' %>>Urgente</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label class="field__label">Fecha inicio</label>
+            <input class="input" type="date" name="fecha_inicio"
+              value="<%= tarea.fecha_inicio ? new Date(tarea.fecha_inicio).toISOString().split('T')[0] : '' %>">
+          </div>
+          <div class="field">
+            <label class="field__label">Fecha límite</label>
+            <input class="input" type="date" name="fecha_limite"
+              value="<%= tarea.fecha_limite ? new Date(tarea.fecha_limite).toISOString().split('T')[0] : '' %>">
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Estado</label>
-        <select class="form-select" name="estado">
-          <option value="Por realizar"  <%= tarea.estado === 'Por realizar'  ? 'selected' : '' %>>Por realizar</option>
-          <option value="En progreso"   <%= tarea.estado === 'En progreso'   ? 'selected' : '' %>>En progreso</option>
-          <option value="En revisión"   <%= tarea.estado === 'En revisión'   ? 'selected' : '' %>>En revisión</option>
-          <option value="Realizado"     <%= tarea.estado === 'Realizado'     ? 'selected' : '' %>>Realizado</option>
-        </select>
+
+      <div class="form-actions">
+        <a href="/tareas/delete/<%= tarea.id %>" class="btn btn--danger btn--sm" style="margin-right:auto">Eliminar</a>
+        <a href="/tareas" class="btn btn--ghost">Cancelar</a>
+        <button class="btn" type="submit">Guardar cambios</button>
       </div>
-      <div class="form-group">
-        <label class="form-label">Prioridad</label>
-        <select class="form-select" name="prioridad">
-          <option value="Baja"    <%= tarea.prioridad === 'Baja'    ? 'selected' : '' %>>Baja</option>
-          <option value="Media"   <%= tarea.prioridad === 'Media'   ? 'selected' : '' %>>Media</option>
-          <option value="Alta"    <%= tarea.prioridad === 'Alta'    ? 'selected' : '' %>>Alta</option>
-          <option value="Urgente" <%= tarea.prioridad === 'Urgente' ? 'selected' : '' %>>Urgente</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Fecha inicio</label>
-        <input type="date" class="form-control" name="fecha_inicio"
-          value="<%= tarea.fecha_inicio ? new Date(tarea.fecha_inicio).toISOString().split('T')[0] : '' %>">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Fecha límite</label>
-        <input type="date" class="form-control" name="fecha_limite"
-          value="<%= tarea.fecha_limite ? new Date(tarea.fecha_limite).toISOString().split('T')[0] : '' %>">
-      </div>
-    </div>
-    <div class="form-actions">
-      <a href="/tareas" class="btn-secondary-action">Cancelar</a>
-      <button type="submit" class="btn-primary-action"><i class="bi bi-check-lg me-1"></i>Guardar Cambios</button>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

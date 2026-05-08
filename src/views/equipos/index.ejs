@@ -1,32 +1,36 @@
-<div class="page-header">
-  <div>
-    <h1 class="page-title">Equipos</h1>
-    <p class="page-subtitle">Gestiona los equipos de trabajo</p>
-  </div>
-  <a href="/equipos/create" class="btn-primary-action"><i class="bi bi-plus-lg"></i> Nuevo Equipo</a>
+<div class="topbar">
+  <h1>Equipos</h1>
+  <div class="topbar__spacer"></div>
+  <a href="/equipos/create" class="topbar__btn">
+    <i data-lucide="plus"></i> Nuevo equipo
+  </a>
 </div>
 
-<% if (equipos.length === 0) { %>
-  <div class="empty-state">
-    <i class="bi bi-people"></i>
-    <h3>Sin equipos todavía</h3>
-    <p>Creá tu primer equipo para empezar a colaborar.</p>
-    <a href="/equipos/create" class="btn-primary-action">Crear equipo</a>
-  </div>
-<% } else { %>
-  <div class="cards-grid">
-    <% equipos.forEach(equipo => { %>
-      <div class="info-card">
-        <div class="info-card-icon"><i class="bi bi-people-fill"></i></div>
-        <div class="info-card-body">
-          <h3 class="info-card-title"><%= equipo.nombre_equipo %></h3>
-          <p class="info-card-desc"><%= equipo.descripcion || 'Sin descripción' %></p>
+<div class="page-content">
+  <% if (!equipos || equipos.length === 0) { %>
+    <div class="empty">
+      <i data-lucide="users"></i>
+      <h3>Sin equipos todavía</h3>
+      <p>Creá tu primer equipo para empezar a colaborar.</p>
+      <a href="/equipos/create" class="btn btn--sm">Crear equipo</a>
+    </div>
+  <% } else { %>
+    <div class="cards-grid">
+      <% equipos.forEach(e => { %>
+        <div class="info-card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--bg-sunken);display:grid;place-items:center;font-family:var(--font-mono);font-weight:600;font-size:13px;border:1px solid var(--border)">
+              <%= e.nombre_equipo.charAt(0).toUpperCase() %>
+            </div>
+            <p class="info-card__title"><%= e.nombre_equipo %></p>
+          </div>
+          <p class="info-card__desc"><%= e.descripcion || 'Sin descripción' %></p>
+          <div class="info-card__actions">
+            <a href="/equipos/<%= e.id %>" class="btn btn--ghost btn--sm">Ver detalles</a>
+            <a href="/equipos/delete/<%= e.id %>" class="btn btn--quiet btn--sm" style="color:var(--tag-red)">Eliminar</a>
+          </div>
         </div>
-        <div class="info-card-actions">
-          <a href="/equipos/<%= equipo.id %>" class="task-btn"><i class="bi bi-eye"></i></a>
-          <a href="/equipos/delete/<%= equipo.id %>" class="task-btn task-btn-danger"><i class="bi bi-trash"></i></a>
-        </div>
-      </div>
-    <% }); %>
-  </div>
-<% } %>
+      <% }); %>
+    </div>
+  <% } %>
+</div>

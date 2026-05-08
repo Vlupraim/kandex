@@ -1,78 +1,69 @@
-<div class="page-header">
-  <div>
-    <h1 class="page-title">Bienvenido, <%= user.nombre_usuario %></h1>
-    <p class="page-subtitle">Resumen de tu actividad en Kandex</p>
-  </div>
-  <a href="/tareas/create" class="btn-primary-action">
-    <i class="bi bi-plus-lg"></i> Nueva Tarea
+<div class="topbar">
+  <h1>Resumen</h1>
+  <div class="topbar__spacer"></div>
+  <a href="/tareas/create" class="topbar__btn">
+    <i data-lucide="plus"></i> Nueva tarea
   </a>
 </div>
 
-<div class="stats-grid">
-  <div class="stat-card stat-blue">
-    <div class="stat-icon"><i class="bi bi-circle"></i></div>
-    <div class="stat-info">
-      <span class="stat-value"><%= tareas.filter(t => t.estado === 'Por realizar').length %></span>
-      <span class="stat-label">Por realizar</span>
+<div class="page-content">
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-box__label"><span class="stat-box__dot" style="background:#9a9286"></span>Por realizar</div>
+      <div class="stat-box__value"><%= tareas.filter(t => t.estado === 'Por realizar').length %></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box__label"><span class="stat-box__dot" style="background:var(--accent)"></span>En progreso</div>
+      <div class="stat-box__value"><%= tareas.filter(t => t.estado === 'En progreso').length %></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box__label"><span class="stat-box__dot" style="background:var(--tag-blue)"></span>En revisión</div>
+      <div class="stat-box__value"><%= tareas.filter(t => t.estado === 'En revisión').length %></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box__label"><span class="stat-box__dot" style="background:var(--green)"></span>Realizadas</div>
+      <div class="stat-box__value"><%= tareas.filter(t => t.estado === 'Realizado').length %></div>
     </div>
   </div>
-  <div class="stat-card stat-amber">
-    <div class="stat-icon"><i class="bi bi-arrow-repeat"></i></div>
-    <div class="stat-info">
-      <span class="stat-value"><%= tareas.filter(t => t.estado === 'En progreso').length %></span>
-      <span class="stat-label">En progreso</span>
-    </div>
-  </div>
-  <div class="stat-card stat-purple">
-    <div class="stat-icon"><i class="bi bi-eye"></i></div>
-    <div class="stat-info">
-      <span class="stat-value"><%= tareas.filter(t => t.estado === 'En revisión').length %></span>
-      <span class="stat-label">En revisión</span>
-    </div>
-  </div>
-  <div class="stat-card stat-green">
-    <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
-    <div class="stat-info">
-      <span class="stat-value"><%= tareas.filter(t => t.estado === 'Realizado').length %></span>
-      <span class="stat-label">Realizadas</span>
-    </div>
-  </div>
-</div>
 
-<div class="section-header">
-  <h2 class="section-title"><i class="bi bi-kanban me-2"></i>Vista rápida del tablero</h2>
-  <a href="/tareas" class="section-link">Ver tablero completo <i class="bi bi-arrow-right"></i></a>
-</div>
-
-<div class="kanban-grid">
-  <% const estados = ['Por realizar','En progreso','En revisión','Realizado'];
-     const iconos   = ['circle','arrow-repeat','eye','check-circle-fill'];
-     estados.forEach((estado, i) => {
-       const cols = tareas.filter(t => t.estado === estado).slice(0,3);
-  %>
-  <div class="kanban-col" data-estado="<%= estado %>">
-    <div class="kanban-col-header">
-      <span class="col-label col-<%= ['blue','amber','purple','green'][i] %>">
-        <i class="bi bi-<%= iconos[i] %>"></i> <%= estado %>
-      </span>
-      <span class="col-count"><%= tareas.filter(t => t.estado === estado).length %></span>
-    </div>
-    <% cols.forEach(tarea => { %>
-      <div class="task-card" draggable="true" data-id="<%= tarea.id %>">
-        <p class="task-title"><%= tarea.titulo %></p>
-        <p class="task-desc"><%= tarea.descripcion || '' %></p>
-        <div class="task-footer">
-          <span class="priority-badge priority-<%= tarea.prioridad %>"><%= tarea.prioridad %></span>
-          <div class="task-actions">
-            <a href="/tareas/edit/<%= tarea.id %>" class="task-btn"><i class="bi bi-pencil"></i></a>
-            <a href="/tareas/delete/<%= tarea.id %>" class="task-btn task-btn-danger"><i class="bi bi-trash"></i></a>
-          </div>
-        </div>
-      </div>
-    <% }); %>
-    <% if (cols.length === 0) { %>
-      <div class="col-empty"><i class="bi bi-inbox"></i><span>Sin tareas</span></div>
-    <% } %>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <p style="margin:0;font-size:13px;font-weight:600">Tareas recientes</p>
+    <a href="/tareas" style="font-size:12px;color:var(--fg-muted);text-decoration:none">Ver tablero →</a>
   </div>
-  <% }); %>
+
+  <% if (tareas.length === 0) { %>
+    <div class="empty">
+      <i data-lucide="inbox"></i>
+      <h3>Sin tareas todavía</h3>
+      <p>Creá tu primera tarea para empezar.</p>
+      <a href="/tareas/create" class="btn btn--sm">Nueva tarea</a>
+    </div>
+  <% } else { %>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Estado</th>
+          <th>Prioridad</th>
+          <th>Fecha límite</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% tareas.slice(0,10).forEach(t => { %>
+          <tr>
+            <td style="font-weight:500"><%= t.titulo %></td>
+            <td><span class="tag"><span class="tag-dot"></span><%= t.estado %></span></td>
+            <td><span class="tag priority-<%= t.prioridad %>"><%= t.prioridad %></span></td>
+            <td style="color:var(--fg-muted);font-size:12px">
+              <%= t.fecha_limite ? new Date(t.fecha_limite).toLocaleDateString('es-ES') : '—' %>
+            </td>
+            <td style="text-align:right">
+              <a href="/tareas/edit/<%= t.id %>" class="btn btn--quiet btn--sm">Editar</a>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } %>
 </div>

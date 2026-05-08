@@ -1,0 +1,44 @@
+<aside class="sidebar">
+  <div class="sidebar__top">
+    <div class="workspace-switcher">
+      <div class="workspace-switcher__avatar">K</div>
+      <div style="flex:1;min-width:0">
+        <div class="workspace-switcher__name">Kandex</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar__nav">
+    <div class="sidebar__group">
+      <a href="/tareas" class="sidebar-item <%= typeof currentPage !== 'undefined' && currentPage === 'tareas' ? 'sidebar-item--active' : '' %>">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Tablero</span>
+      </a>
+      <a href="/dashboard" class="sidebar-item <%= typeof currentPage !== 'undefined' && currentPage === 'dashboard' ? 'sidebar-item--active' : '' %>">
+        <i data-lucide="bar-chart-2"></i>
+        <span>Resumen</span>
+      </a>
+      <a href="/equipos" class="sidebar-item <%= typeof currentPage !== 'undefined' && currentPage === 'equipos' ? 'sidebar-item--active' : '' %>">
+        <i data-lucide="users"></i>
+        <span>Equipos</span>
+      </a>
+      <a href="/reportes" class="sidebar-item <%= typeof currentPage !== 'undefined' && currentPage === 'reportes' ? 'sidebar-item--active' : '' %>">
+        <i data-lucide="trending-up"></i>
+        <span>Reportes</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="sidebar__bottom">
+    <% if (typeof user !== 'undefined' && user) { %>
+      <div class="user-pill__avatar"><%= user.nombre_usuario.charAt(0).toUpperCase() %></div>
+      <div style="flex:1;min-width:0">
+        <div class="user-pill__name"><%= user.nombre_usuario %></div>
+        <div class="user-pill__email"><%= user.email %></div>
+      </div>
+      <a href="/auth/logout" class="user-pill__logout" title="Cerrar sesión">
+        <i data-lucide="log-out"></i>
+      </a>
+    <% } %>
+  </div>
+</aside>

@@ -1,24 +1,43 @@
-<h1 class="mb-4"><%= equipo.nombre_equipo %></h1>
-<p><%= equipo.descripcion %></p>
+<div class="topbar">
+  <a href="/equipos" class="topbar__action" title="Volver"><i data-lucide="arrow-left"></i></a>
+  <h1><%= equipo.nombre_equipo %></h1>
+</div>
 
-<h3 class="mt-4">Miembros del Equipo</h3>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nombre</th>
+<div class="page-content">
+  <% if (equipo.descripcion) { %>
+    <p style="color:var(--fg-muted);margin:0 0 24px;font-size:13px"><%= equipo.descripcion %></p>
+  <% } %>
+
+  <div class="form-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <p style="margin:0;font-size:13px;font-weight:600">Miembros (<%= usuarios.length %>)</p>
+    </div>
+    <% if (usuarios.length === 0) { %>
+      <p style="color:var(--fg-muted);font-size:13px">Este equipo no tiene miembros todavía.</p>
+    <% } else { %>
+      <table class="members-table">
+        <thead>
+          <tr>
+            <th>Usuario</th>
             <th>Email</th>
             <th>Rol</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% usuarios.forEach(usuario => { %>
+          </tr>
+        </thead>
+        <tbody>
+          <% usuarios.forEach(u => { %>
             <tr>
-                <td><%= usuario.nombre_usuario %></td>
-                <td><%= usuario.email %></td>
-                <td><%= usuario.rol %></td>
+              <td style="display:flex;align-items:center;gap:10px">
+                <div style="width:28px;height:28px;border-radius:999px;background:var(--green);color:white;display:grid;place-items:center;font-size:11px;font-weight:600">
+                  <%= u.nombre_usuario.charAt(0).toUpperCase() %>
+                </div>
+                <span style="font-weight:500"><%= u.nombre_usuario %></span>
+              </td>
+              <td style="color:var(--fg-muted)"><%= u.email %></td>
+              <td><span class="tag"><%= u.rol %></span></td>
             </tr>
-        <% }); %>
-    </tbody>
-</table>
-
-<a href="/equipos" class="btn btn-secondary">Volver</a>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</div>

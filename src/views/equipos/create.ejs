@@ -1,23 +1,25 @@
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center">Crear Nuevo Equipo</h2>
-            </div>
-            <div class="card-body">
-                <form action="/equipos/create" method="POST">
-                    <div class="mb-3">
-                        <label for="nombre_equipo" class="form-label">Nombre del Equipo</label>
-                        <input type="text" class="form-control" id="nombre_equipo" name="nombre_equipo" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="4"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-success">Crear Equipo</button>
-                    <a href="/equipos" class="btn btn-secondary">Cancelar</a>
-                </form>
-            </div>
+<div class="topbar">
+  <a href="/equipos" class="topbar__action" title="Volver"><i data-lucide="arrow-left"></i></a>
+  <h1>Nuevo equipo</h1>
+</div>
+
+<div class="page-content">
+  <div class="form-page">
+    <form action="/equipos/create" method="POST">
+      <div class="form-section">
+        <div class="field">
+          <label class="field__label">Nombre del equipo *</label>
+          <input class="input input--lg" type="text" name="nombre_equipo" placeholder="Ej. Equipo Frontend" required autofocus>
         </div>
-    </div>
+        <div class="field">
+          <label class="field__label">Descripción</label>
+          <textarea class="input textarea" name="descripcion" rows="3" placeholder="¿En qué trabaja este equipo?"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <a href="/equipos" class="btn btn--ghost">Cancelar</a>
+        <button class="btn" type="submit">Crear equipo</button>
+      </div>
+    </form>
+  </div>
 </div>

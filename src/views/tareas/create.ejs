@@ -1,66 +1,67 @@
-<div class="page-header">
-  <div>
-    <h1 class="page-title">Nueva Tarea</h1>
-    <p class="page-subtitle">Completá los datos para crear una tarea</p>
-  </div>
-  <a href="/tareas" class="btn-secondary-action"><i class="bi bi-arrow-left"></i> Volver</a>
+<div class="topbar">
+  <a href="/tareas" class="topbar__action" title="Volver"><i data-lucide="arrow-left"></i></a>
+  <h1>Nueva tarea</h1>
 </div>
 
-<div class="form-card">
-  <form action="/tareas/create" method="POST">
-    <div class="form-row">
-      <div class="form-group full-width">
-        <label class="form-label">Título <span class="required">*</span></label>
-        <input type="text" class="form-control" name="titulo" placeholder="Ej. Implementar módulo de reportes" required>
+<div class="page-content">
+  <div class="form-page">
+    <form action="/tareas/create" method="POST">
+      <div class="form-section">
+        <div class="field">
+          <label class="field__label">Título *</label>
+          <input class="input input--lg" type="text" name="titulo" placeholder="¿En qué hay que trabajar?" required autofocus>
+        </div>
+        <div class="field">
+          <label class="field__label">Descripción</label>
+          <textarea class="input textarea" name="descripcion" rows="3" placeholder="Más detalles sobre la tarea…"></textarea>
+        </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group full-width">
-        <label class="form-label">Descripción</label>
-        <textarea class="form-control" name="descripcion" rows="3" placeholder="Detallá el objetivo de la tarea..."></textarea>
+
+      <div class="form-section">
+        <div class="form-row">
+          <div class="field">
+            <label class="field__label">Equipo *</label>
+            <select class="input select" name="equipo_id" required>
+              <% if (!equipos || equipos.length === 0) { %>
+                <option value="1">Sin equipo</option>
+              <% } else { %>
+                <% equipos.forEach(e => { %>
+                  <option value="<%= e.id %>"><%= e.nombre_equipo %></option>
+                <% }); %>
+              <% } %>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label">Prioridad</label>
+            <select class="input select" name="prioridad">
+              <option value="Baja">Baja</option>
+              <option value="Media" selected>Media</option>
+              <option value="Alta">Alta</option>
+              <option value="Urgente">Urgente</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label class="field__label">Estado</label>
+            <select class="input select" name="estado">
+              <option value="Por realizar" selected>Por realizar</option>
+              <option value="En progreso">En progreso</option>
+              <option value="En revisión">En revisión</option>
+              <option value="Realizado">Realizado</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label">Fecha límite</label>
+            <input class="input" type="date" name="fecha_limite">
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Equipo <span class="required">*</span></label>
-        <select class="form-select" name="equipo_id" required>
-          <% if (equipos.length === 0) { %>
-            <option value="1">Sin equipo asignado</option>
-          <% } else { %>
-            <% equipos.forEach(e => { %>
-              <option value="<%= e.id %>"><%= e.nombre_equipo %></option>
-            <% }); %>
-          <% } %>
-        </select>
+
+      <div class="form-actions">
+        <a href="/tareas" class="btn btn--ghost">Cancelar</a>
+        <button class="btn" type="submit">Crear tarea</button>
       </div>
-      <div class="form-group">
-        <label class="form-label">Prioridad</label>
-        <select class="form-select" name="prioridad">
-          <option value="Baja">Baja</option>
-          <option value="Media" selected>Media</option>
-          <option value="Alta">Alta</option>
-          <option value="Urgente">Urgente</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Estado inicial</label>
-        <select class="form-select" name="estado">
-          <option value="Por realizar" selected>Por realizar</option>
-          <option value="En progreso">En progreso</option>
-          <option value="En revisión">En revisión</option>
-          <option value="Realizado">Realizado</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Fecha límite</label>
-        <input type="date" class="form-control" name="fecha_limite">
-      </div>
-    </div>
-    <div class="form-actions">
-      <a href="/tareas" class="btn-secondary-action">Cancelar</a>
-      <button type="submit" class="btn-primary-action"><i class="bi bi-check-lg me-1"></i>Crear Tarea</button>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

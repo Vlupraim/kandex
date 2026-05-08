@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kandex</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="login">
+  <section class="login__form-side">
+    <%- body %>
+  </section>
+
+  <aside class="login__art">
+    <div class="art-grid-bg"></div>
+    <div class="art-stage">
+      <div class="art-board">
+        <div class="art-col">
+          <div class="art-col__head"><span>Por hacer</span><span class="art-col__count">4</span></div>
+          <div class="art-card">
+            <div style="display:flex;gap:4px"><span class="tag tag--amber"><span class="tag-dot"></span>Diseño</span></div>
+            <div class="art-card__title">Auditar el componente de calendario</div>
+            <div class="art-card__row">
+              <div class="art-card__meta">📅 12 may</div>
+              <div class="art-card__avatars"><div style="background:#d97757">AR</div></div>
+            </div>
+          </div>
+          <div class="art-card">
+            <div style="display:flex;gap:4px"><span class="tag tag--blue"><span class="tag-dot"></span>Research</span></div>
+            <div class="art-card__title">Entrevistar a 5 usuarios pro</div>
+          </div>
+        </div>
+        <div class="art-col">
+          <div class="art-col__head"><span>En progreso</span><span class="art-col__count">2</span></div>
+          <div class="art-card" style="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)">
+            <div style="display:flex;gap:4px">
+              <span class="tag tag--red"><span class="tag-dot"></span>Urgente</span>
+              <span class="tag tag--purple"><span class="tag-dot"></span>Móvil</span>
+            </div>
+            <div class="art-card__title">Onboarding nuevo: rediseño completo</div>
+          </div>
+          <div class="art-card">
+            <div style="display:flex;gap:4px"><span class="tag tag--green"><span class="tag-dot"></span>Backend</span></div>
+            <div class="art-card__title">Rate limit del API público</div>
+          </div>
+        </div>
+        <div class="art-col">
+          <div class="art-col__head"><span>Hecho</span><span class="art-col__count">7</span></div>
+          <div class="art-card" style="opacity:.7">
+            <div class="art-card__title" style="text-decoration:line-through;color:var(--fg-muted)">Migrar tema oscuro a tokens</div>
+          </div>
+          <div class="art-card" style="opacity:.7">
+            <div class="art-card__title" style="text-decoration:line-through;color:var(--fg-muted)">Configurar dominio personalizado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="art-quote">
+      <span class="art-quote__bar"></span>
+      <span>Trabajo enfocado, sin las pestañas de siempre.</span>
+    </div>
+  </aside>
+</div>
+</body>
+</html>

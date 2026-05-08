@@ -1,58 +1,53 @@
-// Drag & Drop para Kanban
 document.addEventListener('DOMContentLoaded', () => {
-    const columns = document.querySelectorAll('.kanban-column');
-    let draggedElement = null;
+  const cols = document.querySelectorAll('.col');
+  if (!cols.length) return;
 
-    columns.forEach(column => {
-        column.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            column.style.backgroundColor = '#e9ecef';
-        });
+  let dragId = null;
 
-        column.addEventListener('dragleave', () => {
-            column.style.backgroundColor = '#f8f9fa';
-        });
-
-        column.addEventListener('drop', (e) => {
-            e.preventDefault();
-            column.style.backgroundColor = '#f8f9fa';
-            
-            if (draggedElement) {
-                const taskId = draggedElement.dataset.id;
-                const nuevoEstado = column.dataset.estado;
-                
-                // Enviar actualización al servidor
-                fetch('/tareas/update-position', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: taskId,
-                        estado: nuevoEstado,
-                        posicion: column.children.length
-                    })
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.success) {
-                          column.appendChild(draggedElement);
-                      }
-                  })
-                  .catch(err => console.error(err));
-            }
-        });
+  document.querySelectorAll('.card[draggable]').forEach(card => {
+    card.addEventListener('dragstart', () => {
+      dragId = card.dataset.id;
+      card.classList.add('card--dragging');
     });
-
-    const tasks = document.querySelectorAll('.task-card');
-    tasks.forEach(task => {
-        task.addEventListener('dragstart', () => {
-            draggedElement = task;
-            task.style.opacity = '0.5';
-        });
-
-        task.addEventListener('dragend', () => {
-            draggedElement = null;
-            task.style.opacity = '1';
-        });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('card--dragging');
+      dragId = null;
+      cols.forEach(c => c.classList.remove('col--drag-over'));
     });
+  });
+
+  cols.forEach(col => {
+    col.addEventListener('dragover', e => {
+      e.preventDefault();
+      cols.forEach(c => c.classList.remove('col--drag-over'));
+      col.classList.add('col--drag-over');
+    });
+    col.addEventListener('dragleave', e => {
+      if (!col.contains(e.relatedTarget)) col.classList.remove('col--drag-over');
+    });
+    col.addEventListener('drop', e => {
+      e.preventDefault();
+      col.classList.remove('col--drag-over');
+      if (!dragId) return;
+
+      const estado = col.dataset.estado;
+      const card   = document.querySelector(`.card[data-id="${dragId}"]`);
+      if (!card) return;
+
+      fetch('/tareas/update-position', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: dragId, estado, posicion: col.querySelectorAll('.card').length }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            const list = col.querySelector('.col__list');
+            list.insertBefore(card, list.querySelector('.col__empty'));
+            col.querySelector('.col__count').textContent = list.querySelectorAll('.card').length;
+          }
+        })
+        .catch(console.error);
+    });
+  });
 });

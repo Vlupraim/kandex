@@ -1,51 +1,72 @@
-<div class="page-header">
-  <div>
-    <h1 class="page-title"><i class="bi bi-kanban me-2"></i>Tablero Kanban</h1>
-    <p class="page-subtitle">Arrastrá las tarjetas para cambiar su estado</p>
-  </div>
-  <a href="/tareas/create" class="btn-primary-action">
-    <i class="bi bi-plus-lg"></i> Nueva Tarea
+<div class="topbar">
+  <h1>Tablero</h1>
+  <div class="topbar__spacer"></div>
+  <a href="/tareas/create" class="topbar__btn">
+    <i data-lucide="plus"></i> Nueva tarea
   </a>
 </div>
 
-<div class="kanban-grid kanban-grid-full">
-  <% const estados = ['Por realizar','En progreso','En revisión','Realizado'];
-     const iconos   = ['circle','arrow-repeat','eye','check-circle-fill'];
-     const clases   = ['blue','amber','purple','green'];
-     estados.forEach((estado, i) => {
-       const cols = tareas.filter(t => t.estado === estado);
-  %>
-  <div class="kanban-col" data-estado="<%= estado %>">
-    <div class="kanban-col-header">
-      <span class="col-label col-<%= clases[i] %>">
-        <i class="bi bi-<%= iconos[i] %>"></i> <%= estado %>
-      </span>
-      <span class="col-count"><%= cols.length %></span>
-    </div>
-    <% cols.forEach(tarea => { %>
-      <div class="task-card" draggable="true" data-id="<%= tarea.id %>">
-        <p class="task-title"><%= tarea.titulo %></p>
-        <% if (tarea.descripcion) { %>
-          <p class="task-desc"><%= tarea.descripcion %></p>
-        <% } %>
-        <% if (tarea.fecha_limite) { %>
-          <p class="task-due <% if (new Date(tarea.fecha_limite) < new Date()) { %>task-overdue<% } %>">
-            <i class="bi bi-calendar3"></i>
-            <%= new Date(tarea.fecha_limite).toLocaleDateString('es-ES') %>
-          </p>
-        <% } %>
-        <div class="task-footer">
-          <span class="priority-badge priority-<%= tarea.prioridad %>"><%= tarea.prioridad %></span>
-          <div class="task-actions">
-            <a href="/tareas/edit/<%= tarea.id %>" class="task-btn"><i class="bi bi-pencil"></i></a>
-            <a href="/tareas/delete/<%= tarea.id %>" class="task-btn task-btn-danger"><i class="bi bi-trash"></i></a>
-          </div>
-        </div>
+<div class="board-scroll">
+  <div class="board">
+    <%
+      const cols = [
+        { id: 'por-realizar', label: 'Por realizar', estado: 'Por realizar',  color: '#9a9286' },
+        { id: 'en-progreso',  label: 'En progreso',  estado: 'En progreso',   color: '#d97757' },
+        { id: 'en-revision',  label: 'En revisión',  estado: 'En revisión',   color: '#3a6e9c' },
+        { id: 'realizado',    label: 'Realizado',     estado: 'Realizado',     color: '#3b6e4f' },
+      ];
+      cols.forEach(col => {
+        const cards = tareas.filter(t => t.estado === col.estado);
+    %>
+    <div class="col" data-estado="<%= col.estado %>" id="<%= col.id %>">
+      <div class="col__head">
+        <span class="col__dot" style="background:<%= col.color %>"></span>
+        <span class="col__name"><%= col.label %></span>
+        <span class="col__count"><%= cards.length %></span>
       </div>
+      <div class="col__list">
+        <% cards.forEach(t => { %>
+          <div class="card" draggable="true" data-id="<%= t.id %>">
+            <div class="card__tags">
+              <span class="tag priority-<%= t.prioridad %>"><span class="tag-dot"></span><%= t.prioridad %></span>
+            </div>
+            <div class="card__title"><%= t.titulo %></div>
+            <% if (t.descripcion) { %>
+              <div class="card__desc"><%= t.descripcion %></div>
+            <% } %>
+            <div class="card__foot">
+              <div class="card__meta">
+                <% if (t.fecha_limite) {
+                  const hoy = new Date();
+                  const lim = new Date(t.fecha_limite);
+                  const diff = Math.ceil((lim - hoy) / (1000*60*60*24));
+                  const cls = diff < 0 ? 'due--late' : diff <= 2 ? 'due--soon' : '';
+                %>
+                  <span class="due <%= cls %>">
+                    <i data-lucide="calendar" style="width:11px;height:11px"></i>
+                    <%= lim.toLocaleDateString('es-ES',{day:'numeric',month:'short'}) %>
+                  </span>
+                <% } %>
+              </div>
+              <div class="card__actions">
+                <a href="/tareas/edit/<%= t.id %>" class="card__action" title="Editar">
+                  <i data-lucide="pencil"></i>
+                </a>
+                <a href="/tareas/delete/<%= t.id %>" class="card__action card__action--danger" title="Eliminar">
+                  <i data-lucide="trash-2"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+        <% if (cards.length === 0) { %>
+          <div class="col__empty">Sin tareas en esta columna</div>
+        <% } %>
+      </div>
+      <a href="/tareas/create" class="col__add-card">
+        <i data-lucide="plus"></i> Añadir tarea
+      </a>
+    </div>
     <% }); %>
-    <% if (cols.length === 0) { %>
-      <div class="col-empty"><i class="bi bi-inbox"></i><span>Sin tareas</span></div>
-    <% } %>
   </div>
-  <% }); %>
 </div>
