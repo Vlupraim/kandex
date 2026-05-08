@@ -1,4 +1,5 @@
 const Tarea = require('../models/tareaModel');
+const Equipo = require('../models/equipoModel');
 
 exports.getTareas = async (req, res) => {
     try {
@@ -6,26 +7,31 @@ exports.getTareas = async (req, res) => {
         res.render('tareas/board', { tareas, user: req.user });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error al obtener tareas');
+        res.render('tareas/board', { tareas: [], user: req.user });
     }
 };
 
-exports.getCreate = (req, res) => {
-    res.render('tareas/create', { user: req.user });
+exports.getCreate = async (req, res) => {
+    try {
+        const equipos = await Equipo.findAll();
+        res.render('tareas/create', { equipos, user: req.user });
+    } catch (err) {
+        res.render('tareas/create', { equipos: [], user: req.user });
+    }
 };
 
 exports.postCreate = async (req, res) => {
     try {
-        const { titulo, descripcion, prioridad, fecha_inicio, fecha_limite } = req.body;
+        const { titulo, descripcion, estado, prioridad, equipo_id, fecha_inicio, fecha_limite } = req.body;
         await Tarea.create({
             usuario_id: req.user.id,
-            equipo_id: null,
+            equipo_id: equipo_id || 1,
             titulo,
             descripcion,
-            estado: 'Por realizar',
-            prioridad,
-            fecha_inicio,
-            fecha_limite
+            estado: estado || 'Por realizar',
+            prioridad: prioridad || 'Media',
+            fecha_inicio: fecha_inicio || null,
+            fecha_limite: fecha_limite || null,
         });
         res.redirect('/tareas');
     } catch (err) {
@@ -37,10 +43,11 @@ exports.postCreate = async (req, res) => {
 exports.getEdit = async (req, res) => {
     try {
         const tarea = await Tarea.findById(req.params.id);
+        if (!tarea) return res.redirect('/tareas');
         res.render('tareas/edit', { tarea, user: req.user });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error al obtener tarea');
+        res.redirect('/tareas');
     }
 };
 
@@ -61,7 +68,7 @@ exports.delete = async (req, res) => {
         res.redirect('/tareas');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error al eliminar tarea');
+        res.redirect('/tareas');
     }
 };
 
@@ -69,14 +76,6 @@ exports.updatePosition = async (req, res) => {
     try {
         const { id, posicion, estado } = req.body;
         await Tarea.updatePosition(id, posicion, estado);
-        if (estado === 'Realizado') {
-            await Tarea.update(id, { 
-                titulo: (await Tarea.findById(id)).titulo,
-                descripcion: (await Tarea.findById(id)).descripcion,
-                estado: 'Realizado',
-                prioridad: (await Tarea.findById(id)).prioridad
-            });
-        }
         res.json({ success: true });
     } catch (err) {
         console.error(err);

@@ -17,10 +17,22 @@
     <div class="form-row">
       <div class="form-group full-width">
         <label class="form-label">Descripción</label>
-        <textarea class="form-control" name="descripcion" rows="3" placeholder="Detallá el objetivo y contexto de la tarea..."></textarea>
+        <textarea class="form-control" name="descripcion" rows="3" placeholder="Detallá el objetivo de la tarea..."></textarea>
       </div>
     </div>
     <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Equipo <span class="required">*</span></label>
+        <select class="form-select" name="equipo_id" required>
+          <% if (equipos.length === 0) { %>
+            <option value="1">Sin equipo asignado</option>
+          <% } else { %>
+            <% equipos.forEach(e => { %>
+              <option value="<%= e.id %>"><%= e.nombre_equipo %></option>
+            <% }); %>
+          <% } %>
+        </select>
+      </div>
       <div class="form-group">
         <label class="form-label">Prioridad</label>
         <select class="form-select" name="prioridad">
@@ -30,6 +42,8 @@
           <option value="Urgente">Urgente</option>
         </select>
       </div>
+    </div>
+    <div class="form-row">
       <div class="form-group">
         <label class="form-label">Estado inicial</label>
         <select class="form-select" name="estado">
@@ -38,12 +52,6 @@
           <option value="En revisión">En revisión</option>
           <option value="Realizado">Realizado</option>
         </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Fecha inicio</label>
-        <input type="date" class="form-control" name="fecha_inicio">
       </div>
       <div class="form-group">
         <label class="form-label">Fecha límite</label>
