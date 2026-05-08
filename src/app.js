@@ -76,9 +76,25 @@ app.get('/', (req, res) => {
     res.redirect(req.isAuthenticated() ? '/tareas' : '/auth/login');
 });
 
+// 404
+app.use((req, res) => {
+    res.status(404).send(`
+        <body style="font-family:monospace;padding:40px;background:#faf8f4;color:#1a1a1a">
+        <h2 style="color:#b07f2b">404 — Página no encontrada</h2>
+        <p>${req.method} ${req.path}</p>
+        <a href="/" style="color:#3a6e9c">← Volver al inicio</a>
+        </body>`);
+});
+
+// 500
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send(`<pre style="font-family:monospace;padding:24px;color:#c25e58">${err.message}</pre>`);
+    res.status(500).send(`
+        <body style="font-family:monospace;padding:40px;background:#faf8f4;color:#1a1a1a">
+        <h2 style="color:#c25e58">500 — Error del servidor</h2>
+        <pre style="background:#f5d9d6;padding:16px;border-radius:8px;font-size:13px;overflow:auto">${err.message}\n\n${err.stack}</pre>
+        <a href="/" style="color:#3a6e9c">← Volver al inicio</a>
+        </body>`);
 });
 
 module.exports = app;
